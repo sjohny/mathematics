@@ -24,7 +24,7 @@ import static com.maths.mathematics.utils.GenerateRandom.getRandomInteger;
 @AllArgsConstructor
 @Service
 public class MultiplicationServiceImpl implements MultipliationService {
-    private static final int EXPECTED_NUMBER_OF_TABLE_QUESTIONS = 25;
+    private static final int EXPECTED_NUMBER_OF_TABLE_QUESTIONS = 20;
     private static final int MIN_NUMBER_MULITPLICATION_TABLE = 1;
     private static final int MAX_NUMBER_MULITPLICATION_TABLE = 100;
 
