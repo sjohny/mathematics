@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +32,10 @@ public class UserController {
     public String start(Model model) {
         List<User> users = userRepository.findAll();
         model.addAttribute("users", users);
-        List<ResultDto> resultDtos = mapToResultDto(users);
+        List<ResultDto> resultDtos = mapToResultDto(users).stream()
+                .sorted(Comparator.comparing(ResultDto::getSubmittedAt,
+                        Comparator.nullsLast(Comparator.reverseOrder())))
+                .collect(Collectors.toList());
         model.addAttribute("results", resultDtos);
 
         return INDEX;
