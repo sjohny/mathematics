@@ -24,15 +24,17 @@ public class OperationImpl implements Operation {
 
     private final MultipliationService multipliationService;
     private final AdditionService additionService;
+    private final SubtractionService subtractionService;
+    private final DivisionService divisionService;
 
 
     @Override
     public List<Question> getQuestions(User user) {
         List<Question> allQuestions = new ArrayList<>();
-        List<Question> multiplicationQuestions = multipliationService.getMultiplicationQuestions(user);
-        List<Question> additionQuestions = additionService.getAdditionQuestions(user);
-        allQuestions.addAll(multiplicationQuestions);
-        allQuestions.addAll(additionQuestions);
+        allQuestions.addAll(multipliationService.getMultiplicationQuestions(user));
+        allQuestions.addAll(additionService.getAdditionQuestions(user));
+        allQuestions.addAll(divisionService.getDivisionQuestions(user));
+        allQuestions.addAll(subtractionService.getSubtractionQuestions(user));
         return allQuestions;
     }
 

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class MultiplicationQuestion {
-    private long multiplier;
-    private long multiplicand;
+public class DivisionQuestion {
+    private long dividend;
+    private long divisor;
 }
