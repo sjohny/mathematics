@@ -1,57 +1,52 @@
 package com.maths.mathematics.service;
 
+import com.maths.mathematics.domain.Operand;
 import com.maths.mathematics.entities.Question;
-import com.maths.mathematics.entities.Result;
 import com.maths.mathematics.entities.User;
 import com.maths.mathematics.model.MultiplicationQuestion;
-import com.maths.mathematics.repositories.QuestionRepository;
-import com.maths.mathematics.repositories.ResultRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.maths.mathematics.utils.GenerateRandom.getRandomInteger;
 
-@AllArgsConstructor
 @Service
 public class MultiplicationServiceImpl implements MultipliationService {
-    private static final int EXPECTED_NUMBER_OF_TABLE_QUESTIONS = 10;
-    private static final int MIN_NUMBER_MULITPLICATION_TABLE = 1;
-    private static final int MAX_NUMBER_MULITPLICATION_TABLE = 100;
+    private static final int MIN_NUMBER_RANGE = 1;
+    private static final int MAX_NUMBER_RANGE = 100;
 
-    private final QuestionRepository questionRepository;
-    private final ResultRepository resultRepository;
-    private final QuestionAnswerService questionAnswerService;
+    @Value("${app.multiplication.max.numbers}")
+    private Integer maxNumberOfQuestions;
 
+    @Autowired
+    private QuestionAnswerService questionAnswerService;
+
+    @Autowired
+    private FailedAnswerService failedAnswerService;
 
     @Override
     public List<Question> getMultiplicationQuestions(User user) {
-        List<Question> questionsToInclude = new ArrayList<>();
-        Result latestResultForUser = resultRepository.findFirstByOrderBySubmittedAtDesc();
-        if (latestResultForUser != null) {
-            List<Result> resultsWithSameQuestionSet = resultRepository.findAllByQuestionSet(latestResultForUser.getQuestionSet());
-            List<Result> previouslyFailedResults = resultsWithSameQuestionSet.stream()
-                    .filter(r -> r.getCorrectAnswer() != r.getSubmittedAnswer()).collect(Collectors.toList());
-            List<Question> previouslyFailedQuestions = previouslyFailedResults.stream()
-                    .map(r -> questionRepository.findById(r.getQuestionId()).get()).collect(Collectors.toList());
-            int possibleFailedAnswerCountToInclude = EXPECTED_NUMBER_OF_TABLE_QUESTIONS - previouslyFailedQuestions.size();
-            if (possibleFailedAnswerCountToInclude >= 0) {
-                questionsToInclude = previouslyFailedQuestions;
-            } else {
-                questionsToInclude = previouslyFailedQuestions.subList(0, EXPECTED_NUMBER_OF_TABLE_QUESTIONS - 1);
-            }
+        List<Question> previouslyFailedQuestions = failedAnswerService.getPreviouslyFailedQuestions(user, Operand.MUTLIPLICATION);
+        if (previouslyFailedQuestions.isEmpty()) {
+            return getQuestions(maxNumberOfQuestions);
         }
-        if (questionsToInclude.size() < EXPECTED_NUMBER_OF_TABLE_QUESTIONS) {
-            int remainingCountOFQuestionsCanBeIncluded = EXPECTED_NUMBER_OF_TABLE_QUESTIONS - questionsToInclude.size();
 
-            List<Question> addExtraQuestions = getQuestions(remainingCountOFQuestionsCanBeIncluded);
-            questionsToInclude.addAll(addExtraQuestions);
+        int failedAnswerCountToInclude = Math.subtractExact(maxNumberOfQuestions, previouslyFailedQuestions.size());
+        if (failedAnswerCountToInclude >= 0) {
+            int numberOfNewQuestionsToInclude = Math.subtractExact(maxNumberOfQuestions, previouslyFailedQuestions.size());
+            List<Question> questions = previouslyFailedQuestions;
+            if (numberOfNewQuestionsToInclude != 0) {
+                questions.addAll(getQuestions(numberOfNewQuestionsToInclude));
+            }
+            return questions;
+        } else {//Number of expected questions is covered by failed numbers
+            return previouslyFailedQuestions.subList(0, maxNumberOfQuestions - 1);
+
         }
-        return questionsToInclude;
     }
 
     private List<Question> getQuestions(int numberOfQuestionsExpected) {
@@ -68,8 +63,8 @@ public class MultiplicationServiceImpl implements MultipliationService {
     }
 
     private MultiplicationQuestion getMultiplicationTableQuestion() {
-        int min = MIN_NUMBER_MULITPLICATION_TABLE;
-        int max = MAX_NUMBER_MULITPLICATION_TABLE;
+        int min = MIN_NUMBER_RANGE;
+        int max = MAX_NUMBER_RANGE;
         final int multiplier = getRandomInteger(min, max);
         final int multiplicand = getRandomInteger(min, max);
         return MultiplicationQuestion.builder()

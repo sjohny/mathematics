@@ -67,7 +67,7 @@ public class QuestionAnswerServiceImpl implements QuestionAnswerService{
         return questionRepository.saveAll(questions.stream().map(q -> Question.builder()
                 .firstNumber(q.getSubtrahend())
                 .secondNumber(q.getMinuend())
-                .operand(Operand.SUBSTRACTION)
+                .operand(Operand.SUBTRACTION)
                 .build()).collect(Collectors.toList()));
     }
 
