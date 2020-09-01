@@ -3,7 +3,7 @@ package com.maths.mathematics.service;
 import com.maths.mathematics.domain.Operand;
 import com.maths.mathematics.entities.Question;
 import com.maths.mathematics.entities.User;
-import com.maths.mathematics.model.MultiplicationQuestion;
+import com.maths.mathematics.model.AdditionQuestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,11 +15,11 @@ import java.util.stream.IntStream;
 import static com.maths.mathematics.utils.GenerateRandom.getRandomInteger;
 
 @Service
-public class MultiplicationServiceImpl implements MultipliationService {
-    private static final int MIN_NUMBER_RANGE = 1;
-    private static final int MAX_NUMBER_RANGE = 100;
+public class AdditionServiceImpl implements AdditionService {
+    private static final int MIN_NUMBER_FOR_RANGE = 10000;
+    private static final int MAX_NUMBER_FOR_RANGE = 100000;
 
-    @Value("${app.multiplication.max.numbers}")
+    @Value("${app.addition.max.numbers}")
     private Integer maxNumberOfQuestions;
 
     @Autowired
@@ -29,8 +29,8 @@ public class MultiplicationServiceImpl implements MultipliationService {
     private FailedAnswerService failedAnswerService;
 
     @Override
-    public List<Question> getMultiplicationQuestions(User user) {
-        List<Question> previouslyFailedQuestions = failedAnswerService.getPreviouslyFailedQuestions(user, Operand.MUTLIPLICATION);
+    public List<Question> getAdditionQuestions(User user) {
+        List<Question> previouslyFailedQuestions = failedAnswerService.getPreviouslyFailedQuestions(user, Operand.ADDITION);
         if (previouslyFailedQuestions.isEmpty()) {
             return getQuestions(maxNumberOfQuestions);
         }
@@ -50,26 +50,23 @@ public class MultiplicationServiceImpl implements MultipliationService {
     }
 
     private List<Question> getQuestions(int numberOfQuestionsExpected) {
-        List<MultiplicationQuestion> questions = getTableQuestions(numberOfQuestionsExpected);
-        List<Question> savedQuestions = questionAnswerService.saveMultiplicationQuestions(questions);
-        questionAnswerService.saveMultiplicationAnswers(savedQuestions);
+        List<AdditionQuestion> questions = getAdditionQuestions(numberOfQuestionsExpected);
+        List<Question> savedQuestions = questionAnswerService.saveAdditionQuestions(questions);
+        questionAnswerService.saveAdditionAnswers(savedQuestions);
         return savedQuestions;
     }
 
-    private List<MultiplicationQuestion> getTableQuestions(int numberOfQuestionsExpected) {
+
+    private List<AdditionQuestion> getAdditionQuestions(int numberOfQuestionsExpected) {
         return IntStream.range(0, numberOfQuestionsExpected)
-                .mapToObj(i -> getMultiplicationTableQuestion())
+                .mapToObj(i -> generateQuestions())
                 .collect(Collectors.toList());
     }
 
-    private MultiplicationQuestion getMultiplicationTableQuestion() {
-        int min = MIN_NUMBER_RANGE;
-        int max = MAX_NUMBER_RANGE;
-        final int multiplier = getRandomInteger(min, max);
-        final int multiplicand = getRandomInteger(min, max);
-        return MultiplicationQuestion.builder()
-                .multiplier(multiplier)
-                .multiplicand(multiplicand)
+    private AdditionQuestion generateQuestions() {
+        return AdditionQuestion.builder()
+                .augend(getRandomInteger(MIN_NUMBER_FOR_RANGE, MAX_NUMBER_FOR_RANGE))
+                .addend(getRandomInteger(MIN_NUMBER_FOR_RANGE, MAX_NUMBER_FOR_RANGE))
                 .build();
     }
 }

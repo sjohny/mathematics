@@ -9,6 +9,8 @@ import java.util.List;
 
 @Repository
 public interface ResultRepository extends JpaRepository<Result, Long> {
+    Result findFirstByUserIdOrderBySubmittedAtDesc(long userId);
+
     Result findFirstByOrderBySubmittedAtDesc();
 
     List<Result> findAllByQuestionSet(String questionSet);

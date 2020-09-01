@@ -10,6 +10,7 @@ import com.maths.mathematics.repositories.ResultRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,11 +23,19 @@ public class OperationImpl implements Operation {
     private final ResultRepository resultRepository;
 
     private final MultipliationService multipliationService;
+    private final AdditionService additionService;
+    private final SubtractionService subtractionService;
+    private final DivisionService divisionService;
 
 
     @Override
     public List<Question> getQuestions(User user) {
-        return multipliationService.getMultiplicationQuestions(user);
+        List<Question> allQuestions = new ArrayList<>();
+        allQuestions.addAll(multipliationService.getMultiplicationQuestions(user));
+        allQuestions.addAll(additionService.getAdditionQuestions(user));
+        allQuestions.addAll(divisionService.getDivisionQuestions(user));
+        allQuestions.addAll(subtractionService.getSubtractionQuestions(user));
+        return allQuestions;
     }
 
     @Override

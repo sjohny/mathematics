@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum Operand {
-    MUTLIPLICATION("X"), DIVISION("/"), ADDITION("+"), SUBSTRACTION("-");
+    MUTLIPLICATION("X"), DIVISION("/"), ADDITION("+"), SUBTRACTION("-");
 
     @Getter
     private String value;
