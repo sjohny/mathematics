@@ -1,5 +1,6 @@
 package com.maths.mathematics.application;
 
+import com.maths.mathematics.dto.MarksChart;
 import com.maths.mathematics.dto.ResultDto;
 import com.maths.mathematics.entities.Result;
 import com.maths.mathematics.entities.User;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.sql.Date;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +40,14 @@ public class UserController {
                 .collect(Collectors.toList());
         model.addAttribute("results", resultDtos);
 
+        model.addAttribute("sarahChart", resultDtos.stream()
+                .filter(r -> r.getUserName().equals("Sarah"))
+                .map(this::mapToMarksChart).collect(Collectors.toList()));
+
+        model.addAttribute("mariahChart", resultDtos.stream()
+                .filter(r -> r.getUserName().equals("Mariah"))
+                .map(this::mapToMarksChart).collect(Collectors.toList()));
+
         return INDEX;
     }
 
@@ -56,6 +66,13 @@ public class UserController {
                     .marks(percentage.intValue())
                     .questionSet(takeOne.getQuestionSet()).build();
         }).collect(Collectors.toList());
+    }
+
+
+    private MarksChart mapToMarksChart(ResultDto resultDto) {
+        return MarksChart.builder()
+                .y(resultDto.getMarks())
+                .x(resultDto.getSubmittedAt().getDayOfYear()).build();
     }
 
     @GetMapping("/signup")

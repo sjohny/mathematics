@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../css/shards.min.css">
 </head>
 <body>
+
 <div th:switch="${users}" class="container my-5">
     <div class="row">
         <div class="col-md-6">
@@ -67,5 +68,86 @@
         </div>
     </div>
 </div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="chartContainer1" ></div>
+        </div>
+        <div class="col-md-6">
+            <div id="chartContainer2" ></div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+window.onload = function() {
+/*<![CDATA[*/
+
+    var sarahs = /*[[${sarahChart}]]*/ 'default';
+
+    sarahs.forEach(myFunction);
+    function myFunction(value, index, array) {
+    	console.log(value);
+    }
+
+    var chart = new CanvasJS.Chart("chartContainer1", {
+    	animationEnabled: true,
+    	theme: "dark1",
+    	title:{
+    		text: "Sarah's Progress"
+    	},
+    	axisY:{
+    		includeZero: false
+    	},
+    	data: [{
+    		type: "column",
+    		dataPoints: [sarahs]
+    	}]
+    });
+    chart.render();
+
+    /*<![CDATA[*/
+    	/* Update dataPoints from AJAX and render the chart*/
+    		chart.options.data[0].dataPoints = sarahs;
+    		chart.render();
+    /*]]>*/
+
+
+
+    var mariahs = /*[[${mariahChart}]]*/ 'default';
+
+    mariahs.forEach(myFunction);
+    function myFunction(value, index, array) {
+    	console.log(value);
+    }
+
+    var chart = new CanvasJS.Chart("chartContainer2", {
+    	animationEnabled: true,
+    	theme: "dark1",
+    	title:{
+    		text: "Mariah's Progress"
+    	},
+    	axisY:{
+    		includeZero: false
+    	},
+    	data: [{
+    		type: "column",
+    		dataPoints: [mariahs]
+    	}]
+    });
+    chart.render();
+
+    /*<![CDATA[*/
+    	/* Update dataPoints from AJAX and render the chart*/
+    		chart.options.data[0].dataPoints = mariahs;
+    		chart.render();
+    /*]]>*/
+
+}
+</script>
+
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </body>
 </html>
