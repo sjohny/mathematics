@@ -14,6 +14,9 @@
 # Docker mysql access
 - docker exec -it mysql-standalone mysql -uroot -p
 
+# Back up data
+-  docker exec -i mysql-standalone /usr/bin/mysqldump -uroot -ppassword maths > backup.sql
+
 # Docker run application
 - docker exec -it mysql-standalone mysql -uroot -p
 
@@ -23,3 +26,10 @@
 - docker rmi abc
 - docker rm qwe
 - docker image ls
+
+## Build and run application
+# Build with docker
+- docker build -t mathsimg .
+
+# Run with docker
+
