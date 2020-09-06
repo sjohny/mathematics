@@ -17,6 +17,9 @@
 # Back up data
 -  docker exec -i mysql-standalone /usr/bin/mysqldump -uroot -ppassword maths > backup.sql
 
+# Restore data
+-docker exec -i  mysql-standalone mysql -uroot -ppassword maths < maths.sql
+
 # Docker run application
 - docker exec -it mysql-standalone mysql -uroot -p
 
