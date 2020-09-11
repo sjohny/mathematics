@@ -34,5 +34,7 @@
 # Build with docker
 - docker build -t mathsimg .
 
-# Run with docker
+# Run with docker and link with mysql container
+-docker run -p 8086:8086 --name mathsimg --link mysql-standalone:mysql -d mathsimg
+
 

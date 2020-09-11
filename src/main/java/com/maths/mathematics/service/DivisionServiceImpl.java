@@ -17,9 +17,9 @@ import static com.maths.mathematics.utils.GenerateRandom.getRandomInteger;
 @Service
 public class DivisionServiceImpl implements DivisionService {
     private static final int MIN_NUMBER_DIVISOR = 1;
-    private static final int MAX_NUMBER_DIVISOR = 10;
+    private static final int MAX_NUMBER_DIVISOR = 99;
     private static final int MIN_NUMBER_DIVIDENT = 0;
-    private static final int MAX_NUMBER_DIVIDENT = 100;
+    private static final int MAX_NUMBER_DIVIDENT = 1000;
 
     @Value("${app.division.max.numbers}")
     private Integer maxNumberOfQuestions;

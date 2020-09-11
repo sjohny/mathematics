@@ -17,7 +17,7 @@ import static com.maths.mathematics.utils.GenerateRandom.getRandomInteger;
 @Service
 public class MultiplicationServiceImpl implements MultipliationService {
     private static final int MIN_NUMBER_RANGE = 1;
-    private static final int MAX_NUMBER_RANGE = 100;
+    private static final int MAX_NUMBER_RANGE = 1000;
 
     @Value("${app.multiplication.max.numbers}")
     private Integer maxNumberOfQuestions;
